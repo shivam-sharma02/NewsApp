@@ -1,2 +1,2 @@
 ## Using MVVM , Retrofit , Room ...
-### __Just for learning purpose__ :)
+### Just for learning purpose :)
