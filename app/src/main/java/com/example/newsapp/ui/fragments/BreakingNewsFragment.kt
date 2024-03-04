@@ -1,5 +1,6 @@
 package com.example.newsapp.ui.fragments
 
+import NewsAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.newsapp.Adapters.NewsAdapter
 import com.example.newsapp.R
 import com.example.newsapp.ui.MainActivity
 import com.example.newsapp.ui.NewsViewModel
