@@ -13,11 +13,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.R
+import com.example.newsapp.interfaces.ClickListener
+import com.example.newsapp.models.Article
 import com.example.newsapp.ui.MainActivity
 import com.example.newsapp.ui.NewsViewModel
 import com.example.newsapp.util.Constants.Companion.SEARCH_NEWS_DELAY_TIME
 import com.example.newsapp.util.Resource
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -44,12 +45,16 @@ class SearchNewsFragment: Fragment(R.layout.fragment_search_news) {
 
         setupRecyclerView()
 
+//        newsAdapter.setOnItemClickListener {
+//
+//        }
+
         newsAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putSerializable("article", it)
             }
             findNavController().navigate(
-                R.id.action_searchNewsFragment2_to_articleFragment,
+                R.id.action_searchNewsFragment_to_articleFragment,
                 bundle
             )
         }
@@ -91,7 +96,26 @@ class SearchNewsFragment: Fragment(R.layout.fragment_search_news) {
         })
     }
 
-    private fun setupRecyclerView(){
+//    private fun setupRecyclerView(){
+//        newsAdapter = NewsAdapter(object: ClickListener{
+//            override fun onClick(article: Article) {
+//                val bundle = Bundle().apply {
+//                    putSerializable("article", article)
+//                }
+//                findNavController().navigate(
+//                    R.id.action_searchNewsFragment2_to_articleFragment,
+//                    bundle
+//                )
+//            }
+//
+//        })
+//        recyclerView.apply {
+//            adapter = newsAdapter
+//            layoutManager = LinearLayoutManager(activity)
+//        }
+//    }
+
+    private fun setupRecyclerView() {
         newsAdapter = NewsAdapter()
         recyclerView.apply {
             adapter = newsAdapter

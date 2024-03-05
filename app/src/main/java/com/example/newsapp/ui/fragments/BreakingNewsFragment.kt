@@ -1,9 +1,11 @@
 package com.example.newsapp.ui.fragments
 
+//import NewsAdapter
 import NewsAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -11,6 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.R
+import com.example.newsapp.interfaces.ClickListener
+import com.example.newsapp.models.Article
 import com.example.newsapp.ui.MainActivity
 import com.example.newsapp.ui.NewsViewModel
 import com.example.newsapp.util.Resource
@@ -37,12 +41,16 @@ class BreakingNewsFragment: Fragment(R.layout.fragment_breaking_news) {
 
         setupRecyclerView()
 
+//        newsAdapter.setOnItemClickListener {
+//
+//        }
+
         newsAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putSerializable("article", it)
             }
             findNavController().navigate(
-                R.id.action_breakingNewsFragment2_to_articleFragment,
+                R.id.action_breakingNewsFragment_to_articleFragment,
                 bundle
             )
         }
@@ -68,15 +76,37 @@ class BreakingNewsFragment: Fragment(R.layout.fragment_breaking_news) {
                 }
             }
         })
+
+
     }
 
-    private fun setupRecyclerView(){
+//    private fun setupRecyclerView(){
+//        newsAdapter = NewsAdapter(object : ClickListener{
+//            override fun onClick(article: Article) {
+//                val bundle = Bundle().apply {
+//                    putSerializable("article", article)
+//                }
+//                findNavController().navigate(
+//                    R.id.action_breakingNewsFragment2_to_articleFragment,
+//                    bundle
+//                )
+//            }
+//
+//        })
+//        recyclerView.apply {
+//            adapter = newsAdapter
+//            layoutManager = LinearLayoutManager(activity)
+//        }
+//    }
+
+    private fun setupRecyclerView() {
         newsAdapter = NewsAdapter()
         recyclerView.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
         }
     }
+
 
     private fun hideProgressBar(){
         progressBar.visibility = View.INVISIBLE

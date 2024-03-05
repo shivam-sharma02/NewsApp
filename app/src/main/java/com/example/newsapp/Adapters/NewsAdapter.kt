@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.newsapp.R
+import com.example.newsapp.interfaces.ClickListener
 import com.example.newsapp.models.Article
 
 class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
@@ -38,6 +39,10 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
         )
     }
 
+    override fun getItemCount(): Int {
+        return differ.currentList.size
+    }
+
     private var onItemClickListener: ((Article) -> Unit)? = null
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
@@ -49,15 +54,18 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
             findViewById<TextView>(R.id.tvTitle).text = article.title
             findViewById<TextView>(R.id.tvDescription).text = article.description
             findViewById<TextView>(R.id.tvPublishedAt).text = article.publishedAt
-            setOnItemClickListener {
+
+            setOnClickListener {
                 onItemClickListener?.let { it(article) }
             }
         }
+
+//        holder.itemView.setOnClickListener {
+//            onClickListener.onClick(article)
+//        }
     }
 
-    override fun getItemCount(): Int {
-        return differ.currentList.size
-    }
+
 
     fun setOnItemClickListener(listener: (Article) -> Unit) {
         onItemClickListener = listener

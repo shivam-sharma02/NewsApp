@@ -3,7 +3,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
-    id("androidx.navigation.safeargs.kotlin")
+    id("androidx.navigation.safeargs")
 }
 
 android {
