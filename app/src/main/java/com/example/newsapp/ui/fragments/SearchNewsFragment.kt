@@ -14,8 +14,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.R
-import com.example.newsapp.interfaces.ClickListener
-import com.example.newsapp.models.Article
 import com.example.newsapp.ui.MainActivity
 import com.example.newsapp.ui.NewsViewModel
 import com.example.newsapp.util.Constants
