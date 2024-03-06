@@ -4,6 +4,7 @@ import NewsAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AbsListView
 import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.core.widget.addTextChangedListener
@@ -17,12 +18,14 @@ import com.example.newsapp.interfaces.ClickListener
 import com.example.newsapp.models.Article
 import com.example.newsapp.ui.MainActivity
 import com.example.newsapp.ui.NewsViewModel
+import com.example.newsapp.util.Constants
 import com.example.newsapp.util.Constants.Companion.SEARCH_NEWS_DELAY_TIME
 import com.example.newsapp.util.Resource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.example.newsapp.util.Constants.Companion.QUERY_PAGE_SIZE
 
 class SearchNewsFragment: Fragment(R.layout.fragment_search_news) {
 
@@ -66,11 +69,15 @@ class SearchNewsFragment: Fragment(R.layout.fragment_search_news) {
             job = MainScope().launch {
                 delay(SEARCH_NEWS_DELAY_TIME)
                 it?.let {
-                    if (it.toString().isNotEmpty()){
+                    if (it.toString().isNotEmpty() ){
                         viewModel.searchNews(it.toString())
                     }
+//                    else {
+//                        newsAdapter.clearItems()
+//                    }
                 }
             }
+
         }
 
         viewModel.searchNews.observe(viewLifecycleOwner, Observer { response ->
@@ -79,6 +86,13 @@ class SearchNewsFragment: Fragment(R.layout.fragment_search_news) {
                     hideProgressBar()
                     response.data?.let { newsResponse ->
                         newsAdapter.differ.submitList(newsResponse.articles)
+
+                        val totalPages = newsResponse.totalResults / QUERY_PAGE_SIZE + 2
+                        isLastPage = viewModel.breakingNewsPage == totalPages
+
+                        if (isLastPage) {
+                            recyclerView.setPadding(0,0,0,0)
+                        }
                     }
                 }
 
@@ -115,19 +129,58 @@ class SearchNewsFragment: Fragment(R.layout.fragment_search_news) {
 //        }
 //    }
 
+
+    var isLoading = false
+    var isLastPage = false
+    var isScrolling = false
+
+    val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+            val visibleItemCount = layoutManager.childCount
+            val totalItemCount =  layoutManager.itemCount
+
+            val isNotLoadingAndNotLastPage = !isLoading && !isLastPage
+            val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
+            val isNotAtBeginning  = firstVisibleItemPosition >= 0
+            val isTotalMoreThanVisible = totalItemCount >= Constants.QUERY_PAGE_SIZE
+            val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
+                    isTotalMoreThanVisible && isScrolling
+
+            if (shouldPaginate){
+                viewModel.searchNews(etSearch.text.toString())
+                isScrolling = false
+            }
+        }
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+
+            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                isScrolling = true
+            }
+        }
+    }
+
     private fun setupRecyclerView() {
         newsAdapter = NewsAdapter()
         recyclerView.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
+            addOnScrollListener(this@SearchNewsFragment.scrollListener)
         }
     }
 
     private fun hideProgressBar(){
         progressBar.visibility = View.INVISIBLE
+        isLoading = false
     }
 
     private fun showProgressBar(){
         progressBar.visibility = View.VISIBLE
+        isLoading = true
     }
 }

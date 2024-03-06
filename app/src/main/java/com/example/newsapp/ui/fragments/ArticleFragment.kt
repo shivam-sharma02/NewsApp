@@ -33,17 +33,13 @@ class ArticleFragment: Fragment(R.layout.fragment_article) {
         val article = args.article
         Log.e("ARTICLE", article?.url + "    ******* ")
 
-        article?.let {
-            webView.apply {
-                webViewClient = WebViewClient()
-                loadUrl(article.url)
-            }
+        webView.apply {
+            webViewClient = WebViewClient()
+            article.url?.let { loadUrl(it) }
         }
 
         floatingAction.setOnClickListener {
-            if (article != null) {
-                viewModel.saveArticle(article)
-            }
+            viewModel.saveArticle(article)
             Snackbar.make(view, "Article saved successfully", Snackbar.LENGTH_SHORT).show()
         }
     }

@@ -27,7 +27,7 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
         }
     }
 
-    val differ = AsyncListDiffer(this, diffCallback)
+    var differ = AsyncListDiffer(this, diffCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
         return ArticleViewHolder(
@@ -50,7 +50,7 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
 
         holder.itemView.apply {
             Glide.with(this).load(article.urlToImage).into(findViewById(R.id.ivArticleImage))
-            findViewById<TextView>(R.id.tvSource).text = article.source.name
+            findViewById<TextView>(R.id.tvSource).text = article.source?.name
             findViewById<TextView>(R.id.tvTitle).text = article.title
             findViewById<TextView>(R.id.tvDescription).text = article.description
             findViewById<TextView>(R.id.tvPublishedAt).text = article.publishedAt
@@ -71,4 +71,9 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
         onItemClickListener = listener
         Log.e(TAG, "Item click listener set")
     }
+
+    fun clearItems() {
+        differ.submitList(null)
+    }
+
 }
